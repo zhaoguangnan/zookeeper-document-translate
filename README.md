@@ -72,3 +72,9 @@ zookeeper也有临时节点的概念。znode存在的时间和创建znode的sess
 
 ##### Sequence Nodes -- Unique Naming(有序节点，唯一命名)
 
+当你创建一个znode的时候也可以请求zookeeper追加一个单调递增的值到path的末尾。这个值在父path下是唯一的。这个值格式是%010d样的--由10个0填充(这个值得格式是简化排序的一种方式)。就是这样的
+"<path>0000000001"。这里有使用这一特性的例子[Queue Recipe ](http://zookeeper.apache.org/doc/trunk/recipes.html#sc_recipes_Queues "Queue Recipe ")。注意：当
+增加的数值超过2147483647数字的时候，这个counter将会溢出的(得到的结果就是"<path>-2147483647")。
+
+### Time in ZooKeeper
+
