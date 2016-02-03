@@ -78,3 +78,15 @@ zookeeper也有临时节点的概念。znode存在的时间和创建znode的sess
 
 ### Time in ZooKeeper
 
+zookeeper跟踪时间的多种方式：
+
+    * zxid - zookeeper状态每次改变都从zxid(zookeeper事物ID)中获取时间戳。zxid展示了zookeeper所有改变是有序的。
+    每次改变都会有一个唯一的zxid并且如果zxid1小于zxid2那就表示zxid1发生在zxid2的前面。
+    * Version numbers - 一个node上的每次改变都是产生一个自增的版本号。这三种版本号是：version(这个znode上的数据change number)，
+    cversion(这个znode上的children的change number)，aversion(这个znode上acl的change number)。
+    * Ticks - 当使用多服务器zookeeper的时候，servers使用ticks定义事件的时间比如：状态上传，session超时，链接超时等等。tick时间只是间接
+    暴露了最小的session超时时间(两次tick时间)。如果client请求session超时间小于最小的session超时时间，server将告诉client session超时
+    时间是最小的session超时时间。
+    * Real time - zookeeper不使用真实时间或者时钟。除非在znode创建和修改znode的时候，设置时间戳到stat structure(统计结构)。
+
+### ZooKeeper Stat Structure(zookeeper统计结构)
