@@ -43,3 +43,32 @@ zookeeper有一个命名空间体系，非常像文件系统。唯一不同的�
 
 ### ZNodes
 
+在zookeeper目录树中的每个node节点叫做znode。znodes维护一个统计结构里面包含：数据更改或者acl更改的版本号。这个统计结构也包含时间戳。版本号和时间戳能验证cache并且能协调更新。每次
+znode的数据发生改变版本号就增加。例如：client无论何时获取数据，他们也获取数据的版本号。并且当一个client执行update或者delete操作的时候，改变数据的znode的节点必须提供修改数据的版本号。
+如果提供的版本号不匹配数据的真实版本号操作将失败(这个行为是可以被覆盖的，详情见补充)。
+
+注意：
+
+    * 在分布式应用中，node数据通用主机，一个server，客户端进程等等。在zookeeper文档中，znodes就是指数据节点。
+    servers就是指启动ZooKeeper service的机器。quorum peers就是指构成整体的servers。
+
+znodes就是程序员访问的主要实例。这里有几个值得一提的特征。
+
+##### Watches
+
+client可以在znodes上放置watches。znode上的改变将触发watch然后清除watch。当一个watch被触发了，zookeeper向client发送一个通知。ZooKeeper Watches将介绍更多关于watches的信息。
+
+##### Data Access(数据访问)
+
+在命名空间中的每个znode节点的数据read或者write操作都是原子的。read操作获取一个node上所有关联的bytes数据，write替换所有的数据。每个node都有acl约束谁可以做什么。
+zookeeper不是被设计成为一个一般的数据库或者大对象存储的东西。相反的它是管理和协调数据的。数据可以来源于配置，状态信息，rendezvous等等。各式各样的相对较小的协调数据：
+在千字节之内的。zookeeper client和server实现由智能检测确保znode只能有小于1M的数据，但数据应该远远小于平均值。操作相对较大的数据将会导致一些操作时间较其他的操作长
+很多，并且会导致操作延时。因为需要更多额外的时间花费在网络数据传输和媒体存储。如果真的有大数据需要存储，最常用的手段就是将这些数据放在分布式存储上比如：NFS,HDFS，并且
+在zookeeper上存储数据的存储引用。
+
+##### Ephemeral Nodes(临时节点)
+
+zookeeper也有临时节点的概念。znode存在的时间和创建znode的session的活跃时间一样长。当session结束了znode会被删除。因为临时节点是不允许有children的。
+
+##### Sequence Nodes -- Unique Naming(有序节点，唯一命名)
+
