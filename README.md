@@ -90,3 +90,20 @@ zookeeper跟踪时间的多种方式：
     * Real time - zookeeper不使用真实时间或者时钟。除非在znode创建和修改znode的时候，设置时间戳到stat structure(统计结构)。
 
 ### ZooKeeper Stat Structure(zookeeper统计结构)
+
+在每个zookeeper znode节点上的Stat structure由以下这些字段组成：
+
+    * czxid - 因为znode被创建产生的zxid。
+    * mzxid - 这个znode节点上最后一次修改创建的zxid。
+    * ctime - 这个znode被创建时候的毫秒数。
+    * mtime - 这个znode节点最后一次修改时候的毫秒数。
+    * version - 这个znode节点数据改变的number。
+    * cversion - 这个znode节点children改变的number。
+    * aversion - 这个znode节点ACL改变的number。
+    * ephemeralOwner - 如果是一个临时的node，就是这个znode上的所有者的session id。如果不是一个临时的node，这个值就是0。
+    * dataLength - 这个znode节点data field的长度。
+    * numChildren - 这个znode节点children的数量。
+
+### ZooKeeper Sessions
+
+
