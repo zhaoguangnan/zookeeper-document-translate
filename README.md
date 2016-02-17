@@ -114,4 +114,7 @@ zookeeper client通过创建一个handle建立一个和zookeeper service的sessi
 
 zookeeper client状态转换(图1.1)
 
+为了创建client session应用code必须提供一个链接字符串包含一个host:port的列表类似于("127.0.0.1:4545" or "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002")。zookeeper将挑选任意一个
+server并且尝试连接它。如果这个链接失败或者客户端和server由于任何原因链接不上，client将自动尝试连接列表的下一个server直到链接成功。
 
+在3.2.0中添加的内容：
