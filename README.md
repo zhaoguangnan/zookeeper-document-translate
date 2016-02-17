@@ -106,4 +106,12 @@ zookeeper跟踪时间的多种方式：
 
 ### ZooKeeper Sessions
 
+zookeeper client通过创建一个handle建立一个和zookeeper service的session。一旦创建，handle开始的状态是CONNECTING，client尝试连接到启动zookeeper service的节点，连接成功后状态
+将变成CONNECTED。在正常期间应该就是这两个状态了。如果不可恢复的错误发生了比如：session过期，授权失败，client明确的关闭handle，handle的状态将变成CLOSED。已下图片展示了zookeeper client
+的状态转换。
+
+![](https://github.com/zhaoguangnan/zookeeper-document-translate/blob/master/images/F1-1.png)
+
+zookeeper client状态转换(图1.1)
+
 
