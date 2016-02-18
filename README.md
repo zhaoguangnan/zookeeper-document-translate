@@ -117,4 +117,10 @@ zookeeper client状态转换(图1.1)
 为了创建client session应用code必须提供一个链接字符串包含一个host:port的列表类似于("127.0.0.1:4545" or "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002")。zookeeper将挑选任意一个
 server并且尝试连接它。如果这个链接失败或者客户端和server由于任何原因链接不上，client将自动尝试连接列表的下一个server直到链接成功。
 
-在3.2.0中添加的内容：
+在3.2.0中添加的内容："chroot"后缀可以被添加到connection字符串后面。当解析到达root的所有相对paths时(类似于unix的chroot命令)将运行客户端命令。以下是例子："127.0.0.1:4545/app/a，"127.0.0.1:3000,
+127.0.0.1:3001,127.0.0.1:3002/app/a" client的root将变成"/app/a"所有的path将相对于这个root。"/foo/bar" 从server的角度来看操作path将变成"/app/a/foo/bar"。这个特性在多用户环境中是非常
+有用的。zookeeper service的每个用户可能有不同的root。这使得重用更加简单因为当在部署的时候实际的位置才被确定，每个用户都可以编写应用像是在"/"一样。
+
+当一个client获取一个到zookeeper service的handle时候，zookeeper创建一个zookeeper session，分配给client一个64bit的数字。如果一个client连接到不同的zookeeoper server上，client将发送这个session id
+作为connection handshake的一部分。出于安全考虑，server创建一个session id的密码任何zookeeper server都可以验证。当client建立了session，password就会和session id一起发送到client。每当和新server
+重新建立session时，client就会发送password和session id。
