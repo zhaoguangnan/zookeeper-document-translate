@@ -124,3 +124,9 @@ server并且尝试连接它。如果这个链接失败或者客户端和server�
 当一个client获取一个到zookeeper service的handle时候，zookeeper创建一个zookeeper session，分配给client一个64bit的数字。如果一个client连接到不同的zookeeoper server上，client将发送这个session id
 作为connection handshake的一部分。出于安全考虑，server创建一个session id的密码任何zookeeper server都可以验证。当client建立了session，password就会和session id一起发送到client。每当和新server
 重新建立session时，client就会发送password和session id。
+
+zookeeper client类库调用创建zookeeper session的一个参数是毫秒级的session timeout。client发送一个timeout的request，server响应可以给予client的timeout。当前实现的需求是timeout的最小值是2倍的tickTime
+(在server设置的config)，timeout的最大值是20倍的tickTime。zookeeper client api允许协商timeout。
+
+当client(session)成为zk服务集群的分区时，client将搜索在session创建期间给定的servers的列表。最后，当client和最少一个server恢复连接的时候，session又会变成"connected"状态(如果带着session timeout值重新连接)，
+或者变成"expired"状态(如果在session timeout之后重新链接)。
